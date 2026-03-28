@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Κλείσε Ραντεβού | Sir. Barber</title>
+    <link rel="stylesheet" href="stylesite.css">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+</head>
+<body style="background-color: #0a0a0a;">
+
+    <header>
+        <div class="logo-container">
+            <img src="images/Adobe Express - file.png" alt="Sir. Logo" class="logo"> 
+        </div>
+        <a href="index.html" style="color: #00ff00; text-decoration: none; font-weight: bold;">← ΕΠΙΣΤΡΟΦΗ</a>
+    </header>
+
+    <section class="calendar-section">
+        <h2>ΕΠΙΛΟΓΗ ΗΜΕΡΑΣ & ΩΡΑΣ</h2>
+        <div id='calendar'></div>
+
+        <div style="margin-top: 50px; padding: 25px; border: 1px solid #333; border-radius: 12px; background: #111; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center;">
+            <h3 style="color: #00ff00; margin-top: 0;">Ακύρωση Ραντεβού</h3>
+            <p style="font-size: 0.9rem; color: #ccc;">Εισάγετε το τηλέφωνο που δώσατε στην κράτηση:</p>
+            <input type="text" id="cancelPhone" placeholder="Π.χ. 6900000000" style="padding: 12px; border-radius: 5px; border: 1px solid #008000; background: #000; color: #fff; width: 80%; max-width: 250px; margin-bottom: 15px; text-align: center;">
+            <br>
+            <button onclick="cancelBooking()" class="btn" style="padding: 10px 25px; font-size: 0.9rem; background-color: #8b0000; cursor: pointer;">ΑΚΥΡΩΣΗ ΤΩΡΑ</button>
+        </div>
+    </section>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var scriptURL = "https://script.google.com/macros/s/AKfycbym7otGxUnBjFdU1k6mUngsvW8Cvc_ZMJaajZc0hLCHlYiZy8TQ1gMUkSa1Tqk0eqVGSQ/exec"; 
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            selectOverlap: function(event) {
+                return false;
+            },
+            initialView: 'timeGridWeek',
+            locale: 'el',
+            slotMinTime: '12:00',
+            slotMaxTime: '20:00',
+            slotDuration: '00:30:00', 
+            slotLabelInterval: '00:30',
+            hiddenDays: [0, 1], 
+            allDaySlot: false,
+            selectable: true,
+            events: scriptURL,
+
+            select: function(info) {
+                // ΣΥΝΑΡΤΗΣΗ ΕΛΕΓΧΟΥ ΤΗΛΕΦΩΝΟΥ
+                function isValidPhone(p) {
+                    return /^[0-9]{10}$/.test(p);
+                }
+
+                var name = prompt("Όνομα (Υποχρεωτικό):");
+                var surname = prompt("Επίθετο (Υποχρεωτικό):");
+                var phone = prompt("Τηλέφωνο (10 ψηφία χωρίς κενά):");
+
+                // ΕΛΕΓΧΟΣ ΣΤΟΙΧΕΙΩΝ
+                if (!name || !surname || !phone) {
+                    alert("Πρέπει να συμπληρώσετε όλα τα στοιχεία!");
+                    calendar.unselect();
+                    return;
+                }
+
+                if (!isValidPhone(phone.trim())) {
+                    alert("ΛΑΘΟΣ: Το τηλέφωνο πρέπει να είναι ακριβώς 10 αριθμοί (π.χ. 6987654321).");
+                    calendar.unselect();
+                    return;
+                }
+
+                var data = {
+                    name: name.trim() + " " + surname.trim(),
+                    phone: phone.trim(),
+                    start: info.startStr,
+                    end: info.endStr,
+                    action: "CREATE"
+                };
+
+                fetch(scriptURL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    body: JSON.stringify(data) 
+                })
+                .then(() => {
+                    alert("Το ραντεβού κλείστηκε! Επιστροφή στην αρχική...");
+                    window.location.href = "index.html";
+                });
+            }
+        });
+        calendar.render();
+
+        window.cancelBooking = function() {
+            var phone = document.getElementById('cancelPhone').value;
+            if (!phone) {
+                alert("Παρακαλώ συμπληρώστε το τηλέφωνό σας.");
+                return;
+            }
+
+            if (confirm("Θέλετε σίγουρα να ακυρώσετε το ραντεβού σας;")) {
+                var data = {
+                    phone: phone,
+                    action: "CANCEL"
+                };
+
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(data)
+                })
+                .then(() => {
+                    alert("Το αίτημα ακύρωσης στάλθηκε. Η σελίδα θα ανανεωθεί.");
+                    location.reload();
+                });
+            }
+        };
+    });
+    </script>
+</body>
+</html>
