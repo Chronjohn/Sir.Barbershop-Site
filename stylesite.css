@@ -135,6 +135,8 @@ nav ul li a:hover {
     padding: 30px;
     width: 250px;
     transition: 0.4s;
+    text-align: center;
+    margin: 0 auto; /* Κεντράρισμα για desktop-to-mobile transition */
 }
 
 .barber-card:hover {
@@ -163,6 +165,7 @@ nav ul li a:hover {
     color: #fff;
     font-size: 1.2rem;
     margin: 0;
+    text-align: center;
 }
 
 /* --- 6. ΥΠΗΡΕΣΙΕΣ (SERVICES) --- */
@@ -364,11 +367,12 @@ footer p {
     margin: 5px 0; 
 }
 
-/* Ρυθμίσεις για τα links των κομμωτών - Αφαίρεση υπογράμμισης */
 .barber-card-link {
     text-decoration: none !important;
-    color: #ffffff !important; /* Επιβάλλει το λευκό χρώμα στο κείμενο */
+    color: #ffffff !important; 
     display: block;
+    width: 100%;
+    text-align: center;
     transition: transform 0.3s ease;
 }
 
@@ -377,7 +381,10 @@ footer p {
     color: #ffffff !important;
 }
 
-/* Επιβολή πράσινου χρώματος σε όλα τα links του footer */
+.barber-card-link h3 {
+    text-decoration: none !important;
+}
+
 footer a, 
 footer a:visited,
 footer a[href^="tel"] {
@@ -455,8 +462,27 @@ footer i:hover {
     
     .modal-box { padding: 20px; }
 
+    /* ΔΙΟΡΘΩΣΗ: Κεντράρισμα όλου του κουτιού και του περιεχομένου */
+    .barbers-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
     .barber-card {
-        width: 100%;
+        width: 90%;
         max-width: 300px;
+        margin: 0 auto 20px auto !important; /* Κεντράρει το κουτί οριζόντια */
+        display: block;
+    }
+
+    .barber-card h3 {
+        text-align: center !important;
+        width: 100%;
+    }
+    
+    .barber-card-link {
+        text-align: center !important;
     }
 }
