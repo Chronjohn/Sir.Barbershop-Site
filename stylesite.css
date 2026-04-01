@@ -112,6 +112,8 @@ nav ul li a:hover {
     background: rgba(0, 0, 0, 0.85);
     padding: 60px 5%;
     text-align: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .section-title {
@@ -126,6 +128,7 @@ nav ul li a:hover {
     justify-content: center;
     gap: 30px;
     flex-wrap: wrap;
+    margin: 0 auto;
 }
 
 .barber-card {
@@ -136,7 +139,9 @@ nav ul li a:hover {
     width: 250px;
     transition: 0.4s;
     text-align: center;
-    margin: 0 auto; /* Κεντράρισμα για desktop-to-mobile transition */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .barber-card:hover {
@@ -462,27 +467,32 @@ footer i:hover {
     
     .modal-box { padding: 20px; }
 
-    /* ΔΙΟΡΘΩΣΗ: Κεντράρισμα όλου του κουτιού και του περιεχομένου */
-    .barbers-grid {
+    /* Ενοποιημένη ρύθμιση για απόλυτο κεντράρισμα καρτών Barbers & Services */
+    .barbers-grid, .services-grid {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        width: 100%;
+        margin: 0 auto;
     }
 
-    .barber-card {
-        width: 90%;
+    .barber-card, .service-card {
+        width: 85%;
         max-width: 300px;
-        margin: 0 auto 20px auto !important; /* Κεντράρει το κουτί οριζόντια */
-        display: block;
+        margin: 0 auto 20px auto !important;
+        box-sizing: border-box;
     }
 
-    .barber-card h3 {
+    .barber-card h3, .service-card h3, .service-price {
         text-align: center !important;
         width: 100%;
     }
     
     .barber-card-link {
         text-align: center !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
