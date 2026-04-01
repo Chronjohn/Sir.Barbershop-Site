@@ -2,124 +2,273 @@
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Κλείσε Ραντεβού | Sir. Barber</title>
-    <link rel="stylesheet" href="stylesite.css">
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
-    <link rel ="icon" href="images/LogoSite.png">
+    
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@5.11.3/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@5.11.3/main.min.js'></script>
+
+    <style>
+        /* ΓΕΝΙΚΟ ΣΤΥΛ */
+        body { background-color: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+        header { text-align: center; padding: 25px 10px; }
+        .logo { width: 130px; filter: drop-shadow(0 0 5px rgba(0,255,0,0.2)); }
+
+        #calendar { 
+            width: 100%;
+            max-width: 1100px; 
+            margin: 0 auto; 
+            background: #000000 !important; 
+            padding: 2px; 
+            box-sizing: border-box;
+            border: 2px solid #00ff00; 
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+            touch-action: pan-y !important; 
+        }
+
+        /* ΣΤΥΛ ΓΙΑ ΤΗΝ ΗΜΕΡΟΜΗΝΙΑ (Header) */
+        .fc-toolbar-title {
+            color: #00ff00 !important;
+            font-size: 1.1rem !important;
+            text-transform: capitalize;
+        }
+        .fc-button-primary {
+            background-color: #111 !important;
+            border: 1px solid #00ff00 !important;
+            color: #00ff00 !important;
+            font-size: 0.8em !important;
+            text-transform: uppercase;
+        }
+        .fc-button-primary:disabled {
+            opacity: 0.5;
+        }
+
+        .fc-theme-standard .fc-scrollgrid { border: none !important; }
+        
+        .fc-resource, .fc-timegrid-col {
+            border-right: 4px solid #00ff00 !important;
+            position: relative;
+        }
+
+        .fc-resource:last-child, .fc-timegrid-col:last-child { 
+            border-right: none !important; 
+        }
+
+        .fc-col-header-cell { background: #1a1a1a !important; border-bottom: 3px solid #00ff00 !important; }
+        .fc-col-header-cell-cushion {
+            color: #00ff00 !important;
+            padding: 12px 2px !important;
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none !important;
+        }
+
+        .barber-photo { 
+            width: 50px; height: 50px; border-radius: 50%; 
+            border: 2px solid #00ff00; margin-bottom: 6px; 
+            object-fit: cover; box-shadow: 0 0 10px rgba(0,255,0,0.5);
+        }
+
+        .booked-event { 
+            background: linear-gradient(135deg, #8b0000 0%, #ff0000 100%) !important; 
+            border: 1px solid #ff4d4d !important; 
+            font-weight: bold;
+            border-radius: 5px !important;
+        }
+
+        .fc-timegrid-slot { height: 70px !important; background: #000 !important; }
+        .fc-timegrid-slot-label-cushion { 
+            font-size: 0.9em; 
+            color: #aaa !important; 
+            /* Αφαιρέσαμε το lowercase για να φαίνεται σωστά το 24ωρο */
+        }
+        
+        .fc-timegrid-allday, .fc-license-message { display: none !important; }
+        .fc-scroller { overflow-y: hidden !important; }
+
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); display: none; align-items: center; 
+            justify-content: center; z-index: 10000; backdrop-filter: blur(10px); 
+        }
+        .modal-box { 
+            background: #111; padding: 30px; border-radius: 25px; 
+            border: 2px solid #00ff00; width: 90%; max-width: 400px; 
+            text-align: center;
+        }
+
+        .modal-input, .modal-select { 
+            width: 100%; padding: 15px; margin: 10px 0; background: #000; 
+            color: #fff; border: 1px solid #333; border-radius: 12px; font-size: 16px; 
+            box-sizing: border-box; outline: none;
+        }
+
+        .btn-confirm { 
+            background: #00ff00; color: black; border: none; padding: 16px; 
+            border-radius: 12px; font-weight: bold; width: 100%; font-size: 1.1em; 
+            cursor: pointer; text-transform: uppercase;
+        }
+
+        .cancel-section { 
+            margin: 30px auto; width: 92%; max-width: 500px; padding: 25px; 
+            background: #111; border: 1px solid #222; border-radius: 20px; text-align: center;
+        }
+    </style>
 </head>
-<body style="background-color: #0a0a0a;">
+<body>
 
     <header>
-        <div class="logo-container">
-            <img src="images/logo_Sir.Barbershop.png" - file.png" alt="Sir. Logo" class="logo"> 
-        </div>
+        <img src="images/logo_Sir.Barbershop.png" alt="Sir. Logo" class="logo">
+        <br><br>
         <a href="index.html" style="color: #00ff00; text-decoration: none; font-weight: bold;">← ΕΠΙΣΤΡΟΦΗ</a>
     </header>
 
-    <section class="calendar-section">
-        <h2>ΕΠΙΛΟΓΗ ΗΜΕΡΑΣ & ΩΡΑΣ(ΚΡΑΤΑ ΠΑΤΗΜΕΝΟ ΤΟ ΚΟΥΤΙ ΠΟΥ ΘΕΛΕΙΣ)</h2>
-        <div id='calendar'></div>
+    <div id='calendar'></div>
 
-        <div style="margin-top: 50px; padding: 25px; border: 1px solid #333; border-radius: 12px; background: #111; max-width: 500px; margin-left: auto; margin-right: auto; text-align: center;">
-            <h3 style="color: #00ff00; margin-top: 0;">Ακύρωση Ραντεβού</h3>
-            <p style="font-size: 0.9rem; color: #ccc;">Εισάγετε το τηλέφωνο που δώσατε στην κράτηση:</p>
-            <input type="text" id="cancelPhone" placeholder="Π.χ. 6900000000" style="padding: 12px; border-radius: 5px; border: 1px solid #008000; background: #000; color: #fff; width: 80%; max-width: 250px; margin-bottom: 15px; text-align: center;">
-            <br>
-            <button onclick="cancelBooking()" class="btn" style="padding: 10px 25px; font-size: 0.9rem; background-color: #8b0000; cursor: pointer;">ΑΚΥΡΩΣΗ ΤΩΡΑ</button>
+    <div class="cancel-section">
+        <h3 style="color: #00ff00; margin-top:0;">❌ ΑΚΥΡΩΣΗ ΡΑΝΤΕΒΟΥ</h3>
+        <input type="tel" id="cancelPhone" placeholder="Τηλέφωνο" class="modal-input" style="text-align:center;">
+        <button onclick="cancelBooking()" style="background:#8b0000; color:white; border:none; padding:14px; border-radius:12px; width:100%; font-weight:bold;">ΑΚΥΡΩΣΗ ΤΩΡΑ</button>
+    </div>
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="color:white; margin-top:0;">✂️ ΚΡΑΤΗΣΗ</h2>
+            <p id="modalInfo" style="color:#00ff00; font-weight:bold; margin-bottom: 20px;"></p>
+            <input type="text" id="custName" placeholder="Ονοματεπώνυμο *" class="modal-input">
+            <input type="tel" id="custPhone" placeholder="Τηλέφωνο *" maxlength="10" class="modal-input">
+            <select id="serviceSelect" class="modal-select">
+                <option value="" disabled selected>Επιλέξτε Υπηρεσία *</option>
+                <option value="Αντρικό Κούρεμα (12€)">Αντρικό Κούρεμα (12€)</option>
+                <option value="Παιδικό Κούρεμα (10€)">Παιδικό Κούρεμα (10€)</option>
+                <option value="Ξύρισμα (8€)">Ξύρισμα (8€)</option>
+            </select>
+            <button onclick="submitBooking()" class="btn-confirm" style="margin-top: 15px;">ΕΠΙΒΕΒΑΙΩΣΗ ✓</button>
+            <button onclick="closeModal()" style="background:none; border:none; color:#555; margin-top:20px; width:100%;">ΠΙΣΩ</button>
         </div>
-    </section>
+    </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var scriptURL = "https://script.google.com/macros/s/AKfycbym7otGxUnBjFdU1k6mUngsvW8Cvc_ZMJaajZc0hLCHlYiZy8TQ1gMUkSa1Tqk0eqVGSQ/exec"; 
+        var scriptURL = "https://script.google.com/macros/s/AKfycbxQAuMcujUpkygtoSs3Y9zgB0tF3-DO2NWgGBC3Inj5BDl3kCSFgVzH-4fxhNCQg-L4eQ/exec"; 
+        var selData = null;
 
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            selectOverlap: function(event) {
-                return false;
-            },
-            initialView: 'timeGridWeek',
-            locale: 'el',
-            slotMinTime: '12:00',
-            slotMaxTime: '20:00',
-            slotDuration: '00:30:00', 
-            slotLabelInterval: '00:30',
-            hiddenDays: [0, 1], 
-            allDaySlot: false,
-            selectable: true,
-            events: scriptURL,
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                schedulerLicenseKey: 'CC-Attribution-NonCommercial',
+                initialView: 'resourceTimeGridDay',
+                locale: 'el', 
+                
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
+                titleFormat: { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' },
 
-            select: function(info) {
-                // ΣΥΝΑΡΤΗΣΗ ΕΛΕΓΧΟΥ ΤΗΛΕΦΩΝΟΥ
-                function isValidPhone(p) {
-                    return /^[0-9]{10}$/.test(p);
+                selectable: true,
+                longPressDelay: 50,
+                eventLongPressDelay: 50,
+                selectLongPressDelay: 50,
+                allDaySlot: false,
+                
+                businessHours: [
+                    { daysOfWeek: [2,3,4,5], startTime: '11:00', endTime: '20:00' },
+                    { daysOfWeek: [6], startTime: '10:00', endTime: '19:00' }
+                ],
+                slotMinTime: '10:00', 
+                slotMaxTime: '20:00',
+
+                slotDuration: '00:30:00',
+                slotLabelInterval: '00:30:00',
+                
+                // ΑΛΛΑΓΗ ΣΕ 24ΩΡΗ ΜΟΡΦΗ (slotLabelFormat)
+                slotLabelFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false // Αφαιρεί το π.μ./μ.μ.
+                },
+                
+                // Επίσης ρύθμιση για το πώς εμφανίζεται η ώρα στα events αν υπήρχαν
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                },
+
+                resources: [
+                    { id: 'Γιάννης Κονταξάκης', title: 'Γιάννης Κονταξάκης' },
+                    { id: 'Νικήτας Μανουσέλης', title: 'Νικήτας Μανουσέλης' }
+                ],
+                resourceLabelContent: function(arg) {
+                    let barberName = arg.resource.title;
+                    let photoUrl = (barberName.includes('Γιάννης')) ? 'images/giannis.jpg' : 'images/nikitas.jpg';
+                    let container = document.createElement('div');
+                    let img = document.createElement('img');
+                    img.src = photoUrl; img.className = 'barber-photo';
+                    let span = document.createElement('span');
+                    span.innerText = barberName;
+                    container.appendChild(img); container.appendChild(span);
+                    return { domNodes: [container] };
+                },
+                selectOverlap: false, 
+                hiddenDays: [0, 1],
+                contentHeight: 'auto',
+                
+                events: function(info, success) {
+                    fetch(scriptURL).then(r => r.json()).then(data => {
+                        let evs = data.map(item => ({
+                            resourceId: item.barber, start: item.start, end: item.end, title: 'ΠΙΑΣΜΕΝΟ', className: 'booked-event'
+                        }));
+                        success(evs);
+                    });
+                },
+                select: function(info) {
+                    let day = info.start.getDay();
+                    let hour = info.start.getHours();
+                    let minutes = info.start.getMinutes();
+                    let decimalTime = hour + (minutes / 60);
+                    
+                    if (day === 6) { 
+                        if (decimalTime < 10 || decimalTime >= 19) { calendar.unselect(); return; }
+                    } else { 
+                        if (decimalTime < 11 || decimalTime >= 20) { calendar.unselect(); return; }
+                    }
+
+                    selData = info;
+                    
+                    // ΑΛΛΑΓΗ ΣΕ 24ΩΡΗ ΜΟΡΦΗ ΣΤΟ MODAL (hour12: false)
+                    let time = new Date(info.start).toLocaleTimeString('el-GR', {
+                        hour: '2-digit', 
+                        minute:'2-digit',
+                        hour12: false
+                    });
+                    
+                    document.getElementById('modalInfo').innerText = info.resource.title + " | " + time;
+                    document.getElementById('bookingModal').style.display = 'flex';
+                    calendar.unselect(); 
                 }
-
-                var name = prompt("Όνομα (Υποχρεωτικό):");
-                var surname = prompt("Επίθετο (Υποχρεωτικό):");
-                var phone = prompt("Τηλέφωνο (10 ψηφία χωρίς κενά):");
-
-                // ΕΛΕΓΧΟΣ ΣΤΟΙΧΕΙΩΝ
-                if (!name || !surname || !phone) {
-                    alert("Πρέπει να συμπληρώσετε όλα τα στοιχεία!");
-                    calendar.unselect();
-                    return;
-                }
-
-                if (!isValidPhone(phone.trim())) {
-                    alert("ΛΑΘΟΣ: Το τηλέφωνο πρέπει να είναι ακριβώς 10 αριθμοί (π.χ. 6987654321).");
-                    calendar.unselect();
-                    return;
-                }
-
-                var data = {
-                    name: name.trim() + " " + surname.trim(),
-                    phone: phone.trim(),
-                    start: info.startStr,
-                    end: info.endStr,
-                    action: "CREATE"
-                };
-
-                fetch(scriptURL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    body: JSON.stringify(data) 
-                })
-                .then(() => {
-                    alert("Το ραντεβού κλείστηκε! Επιστροφή στην αρχική...");
-                    window.location.href = "index.html";
-                });
-            }
+            });
+            calendar.render();
         });
-        calendar.render();
 
-        window.cancelBooking = function() {
-            var phone = document.getElementById('cancelPhone').value;
-            if (!phone) {
-                alert("Παρακαλώ συμπληρώστε το τηλέφωνό σας.");
-                return;
-            }
-
-            if (confirm("Θέλετε σίγουρα να ακυρώσετε το ραντεβού σας;")) {
-                var data = {
-                    phone: phone,
-                    action: "CANCEL"
-                };
-
-                fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(data)
-                })
-                .then(() => {
-                    alert("Το αίτημα ακύρωσης στάλθηκε. Η σελίδα θα ανανεωθεί.");
-                    location.reload();
-                });
-            }
-        };
-    });
+        function closeModal() { document.getElementById('bookingModal').style.display = 'none'; }
+        function submitBooking() {
+            let n = document.getElementById('custName').value, p = document.getElementById('custPhone').value, s = document.getElementById('serviceSelect').value;
+            if(!n || p.length < 10 || !s) return alert("Συμπληρώστε όλα τα στοιχεία.");
+            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'CREATE', name: n, phone: p, service: s, barber: selData.resource.id, start: selData.startStr, end: selData.endStr }) }).then(() => { alert("Το ραντεβού κλείστηκε!"); location.reload(); });
+        }
+        function cancelBooking() {
+            let p = document.getElementById('cancelPhone').value;
+            if(!p) return alert("Βάλτε το τηλέφωνο.");
+            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'CANCEL', phone: p }) }).then(() => { alert("Το αίτημα στάλθηκε."); location.reload(); });
+        }
     </script>
 </body>
 </html>
